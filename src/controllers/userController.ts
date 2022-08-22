@@ -4,7 +4,15 @@ import bcrypt from 'bcrypt'
 
 
 const index = async (req: Request, res: Response) => {
-    res.json('Rota em desenvolvimento.')
+    try {
+        const users = await User.find({}, { password: 0, rules: 0, createdAt: 0, updatedAt: 0, __v: 0 })
+
+        res.json({ message: users })
+        return
+    } catch (err) {
+        console.log(err)
+        res.json({ message: 'Error ao buscar dados.' })
+    }
 }
 
 const show = async (req: Request, res: Response) => {
@@ -32,7 +40,6 @@ const store = async (req: Request, res: Response) => {
             return
         }
     } catch (err) {
-        console.log(err)
         res.status(500).json({ message: 'Erro ao criar o usuário.' })
         return
     }

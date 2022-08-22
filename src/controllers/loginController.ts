@@ -15,17 +15,17 @@ const login = async (req: Request, res: Response) => {
 
         //Busca no banco o usuário
         const userData = await User.findOne({ email: emailUserRequest })
-    
+
         //Verifica se o usuário informado existe e se a senha informada está correta
         if (!userData) return res.status(400).json({ message: 'Usuário não existe.' })
-        if (!await bcrypt.compare( passwordHash, userData.password )) return res.status(400).json({ message: 'Senha inválida.' })
-    
-        const { firstName, lastName, email } = userData
+        if (!await bcrypt.compare(passwordHash, userData.password)) return res.status(400).json({ message: 'Senha inválida.' })
+
+        const { firstName, lastName, email, rules, _id } = userData
 
         //Gera o token do usuário
         const token = jwt.sign({ firstName, lastName, email }, jwtSecretKey, { expiresIn: 300 })
 
-        res.json({ message: { token, firstName, lastName, email } })
+        res.json({ message: { token, firstName, lastName, email, rules, _id } })
 
         return
 
