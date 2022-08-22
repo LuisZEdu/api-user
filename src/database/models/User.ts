@@ -1,17 +1,16 @@
-import { timeStamp } from "console"
 import { Schema, Model, model } from "mongoose"
 
-export interface IUser extends Document {
-    firtName: string,
+export interface IUser {
+    firstName: string,
     lastName: string,
     email: string,
     password: string
 }
 
 const userSchema = new Schema<IUser>({
-    firtName: { type: String, required: true },
-    lastName: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
+    firstName: { type: String, required: true, minlength: 4, maxlength: 15, lowercase: true },
+    lastName: { type: String, required: true, minlength: 4, maxlength: 15 },
+    email: { type: String, required: true, unique: true, lowercase: true },
     password: { type: String, required: true }
 }, { timestamps: true })
 
