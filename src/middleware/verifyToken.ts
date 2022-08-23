@@ -11,13 +11,13 @@ const jwtVerify = async (req: Request, res: Response, next: NextFunction) => {
     try {
         if (secretKey && token) {
             const data = jwt.verify(token, secretKey) as JwtPayload
-            
+
             const { firstName, lastName, email } = data
-    
+
             const user = User.findOne({ firstName, lastName, email })
-    
-            if (!user) return res.json({ message: 'Usuário é inválido.' })
-    
+
+            if (!user) return res.status(400).json({ message: 'Usuário é inválido.' })
+
             req.body.firstName = firstName
             req.body.lastName = lastName
             req.body.email = email
@@ -27,7 +27,7 @@ const jwtVerify = async (req: Request, res: Response, next: NextFunction) => {
             res.json({ message: 'Dados incorretos.' })
         }
     } catch (err) {
-        res.json({ message: 'Token inválido.' })
+        res.status(401).json({ message: 'Token inválido.' })
         return
     }
 }

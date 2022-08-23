@@ -10,6 +10,6 @@ usersRoutes.get('/user', verifyToken.jwtVerify, verifyRules.rules, userControlle
 usersRoutes.get('/user/:id?', userController.show)
 usersRoutes.post('/user', userController.store)
 usersRoutes.put('/user/:id', userController.update)
-usersRoutes.delete('/user/:id?', userController.clear)
+usersRoutes.delete('/user/:id', userController.clear)
 
 

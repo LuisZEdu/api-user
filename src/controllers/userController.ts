@@ -4,8 +4,12 @@ import bcrypt from 'bcrypt'
 
 
 const index = async (req: Request, res: Response) => {
+
+    const limit = Number(req.query.limit) || 10
+    const skip = Number(req.query.skip) || 0
+
     try {
-        const users = await User.find({}, { password: 0, rules: 0, createdAt: 0, updatedAt: 0, __v: 0 })
+        const users = await User.find({}, { password: 0, rules: 0, createdAt: 0, updatedAt: 0, __v: 0 }).limit(limit).skip(skip)
 
         res.json({ message: users })
         return
@@ -16,7 +20,7 @@ const index = async (req: Request, res: Response) => {
 }
 
 const show = async (req: Request, res: Response) => {
-    res.json('Rota em desenvolvimento.')
+    res.json(req.params.id)
 }
 
 const store = async (req: Request, res: Response) => {
