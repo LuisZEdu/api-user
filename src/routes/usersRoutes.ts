@@ -9,7 +9,7 @@ export const usersRoutes = Router()
 usersRoutes.get('/user', verifyToken.jwtVerify, verifyRules.rules, userController.index)
 usersRoutes.get('/user/:id?', userController.show)
 usersRoutes.post('/user', userController.store)
-usersRoutes.put('/user/:id', userController.update)
+usersRoutes.put('/user/:id', verifyToken.jwtVerify, userController.update)
 usersRoutes.delete('/user/:id', userController.clear)
 
 

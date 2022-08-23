@@ -50,7 +50,13 @@ const store = async (req: Request, res: Response) => {
 }
 
 const update = async (req: Request, res: Response) => {
-    res.json('Rota em desenvolvimento.')
+    const { id } = req.params //Usuário a ser alterado
+    const { email } = req.body //Verifica se o usuário que está alterando é o mesmo a ser alterado ou um administrador
+
+    const user = await User.findOne({ email })
+
+    console.log(user)
+    res.json('Ok')
 }
 
 const clear = async (req: Request, res: Response) => {

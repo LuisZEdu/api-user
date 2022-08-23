@@ -18,9 +18,7 @@ const jwtVerify = async (req: Request, res: Response, next: NextFunction) => {
 
             if (!user) return res.status(400).json({ message: 'Usuário é inválido.' })
 
-            req.body.firstName = firstName
-            req.body.lastName = lastName
-            req.body.email = email
+            req.body.dataUser = { firstName, lastName, email }
             next()
             return
         } else {
