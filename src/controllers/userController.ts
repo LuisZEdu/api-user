@@ -20,7 +20,7 @@ const index = async (req: Request, res: Response) => {
 }
 
 const show = async (req: Request, res: Response) => {
-    res.json(req.params.id)
+    res.json({ message: 'Rota em desenvolvimento.' })
 }
 
 const store = async (req: Request, res: Response) => {
