@@ -50,10 +50,20 @@ const store = async (req: Request, res: Response) => {
 }
 
 const update = async (req: Request, res: Response) => {
-    const { id } = req.params //Usuário a ser alterado
-    const { email } = req.body //Verifica se o usuário que está alterando é o mesmo a ser alterado ou um administrador
+    const { id } = req.params //ID do Usuário a ser alterado
+    const { email } = req.body.dataUser //O usuário que está tentando fazer o update para fins de identificação de prmissões.
 
-    const user = await User.findOne({ email })
+    const newFirstName = req.body.firstName
+    const newLastName = req.body.lastName
+    const newPassword = req.body.password
+
+    /*Buscar o usuário que está tentando realizar o update para identificar sé é um admin
+    ou se usuário está tentando alterar os próprios dados.*/
+    const user = await User.findOne({ email }, { password: 0, rules: 0, createdAt: 0, updatedAt: 0, __v: 0 })
+
+    if (user?.rules === 'admin' || user?._id.toString() === id) {
+        
+    }
 
     console.log(user)
     res.json('Ok')
