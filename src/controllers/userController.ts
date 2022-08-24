@@ -19,10 +19,6 @@ const index = async (req: Request, res: Response) => {
     }
 }
 
-const show = async (req: Request, res: Response) => {
-    res.json({ message: 'Rota em desenvolvimento.' })
-}
-
 const store = async (req: Request, res: Response) => {
     const { firstName, lastName, email, password }: IUser = req.body
 
@@ -57,37 +53,65 @@ const update = async (req: Request, res: Response) => {
     const newLastName = req.body.lastName
     const newPassword = req.body.password
 
-    /*Buscar o usuário que está tentando realizar o update para identificar sé é um admin
-    ou se usuário está tentando alterar os próprios dados.*/
-    const user = await User.findOne({ email }, { password: 0, rules: 0, createdAt: 0, updatedAt: 0, __v: 0 })
+    if (!newFirstName && !newLastName && !newPassword) return res.status(400).json({ message: 'Dados necessários não informados.' })
 
-    if (user?.rules === 'admin' || user?._id.toString() === id) {
-        
+    try {
+        /*Buscar o usuário que está tentando realizar o update para identificar sé é um admin
+        ou se usuário está tentando alterar os próprios dados.*/
+        const user = await User.findOne({ email }, {
+            password: 0,
+            createdAt: 0,
+            updatedAt: 0, __v: 0
+        })
+
+        if (user?.rules === 'admin' || user?._id.toString() === id) {
+            await User.findOneAndUpdate({ _id: id }, {
+                firstName: newFirstName,
+                lastName: newFirstName,
+                password: await bcrypt.hash(newPassword, 10)
+            })
+            res.json({ message: 'Dados alterados com sucesso.' })
+            return
+        } else {
+            res.status(400).json({ message: 'Você não está autorizado a alterar os dados.' })
+        }
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ message: 'Erro ao alterar os dados.' })
     }
-
-    console.log(user)
-    res.json('Ok')
 }
 
 const clear = async (req: Request, res: Response) => {
-    const { id } = req.params
+    const { id } = req.params //ID do Usuário a ser deletado.
+    const { email } = req.body.dataUser //O usuário que está tentando fazer o delete para fins de identificação de prmissões.
 
-    if (!id) return res.status(400).json({ message: 'ID do usuário não informado.' })
+    if (!id) return res.status(400).json({
+        message: 'Dados necessários não informados.'
+    })
 
     try {
-        await User.deleteOne({ _id: id })
-        res.json({ message: 'Usuário deletado.' })
-        return
+        /*Buscar o usuário que está tentando realizar o delete para identificar sé é um admin
+        ou se usuário está tentando alterar os próprios dados.*/
+        const user = await User.findOne({ email }, {
+            password: 0,
+            createdAt: 0,
+            updatedAt: 0, __v: 0
+        })
+
+        if (user?.rules === 'admin' || user?._id.toString() === id) {
+            await User.deleteOne({ _id: id })
+            res.json({ message: 'Usuário deletado.' })
+            return
+        } else {
+            res.status(401).json({ message: 'Você não está autorizado a alterar os dados.' })
+        }
     } catch (err) {
         res.status(500).json({ message: 'Erro ao deletar o usuário.' })
-        console.log(err)
-        return
     }
 }
 
 export const userController = {
     index,
-    show,
     store,
     update,
     clear,

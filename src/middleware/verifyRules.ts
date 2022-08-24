@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express"
 import { User } from "../database/models/User"
 
 const rules = async (req: Request, res: Response, next: NextFunction) => {
-    const { firstName, lastName, email } = req.body
+    const { firstName, lastName, email } = req.body.dataUser
 
     try {
         const user = await User.findOne({ firstName, lastName, email })
