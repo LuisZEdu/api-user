@@ -9,9 +9,18 @@ const index = async (req: Request, res: Response) => {
     const skip = Number(req.query.skip) || 0
 
     try {
-        const users = await User.find({}, { password: 0, rules: 0, createdAt: 0, updatedAt: 0, __v: 0 }).limit(limit).skip(skip)
+        const users = await User.find({}, {
+            password: 0,
+            rules: 0,
+            createdAt: 0,
+            updatedAt: 0,
+            __v: 0
+        }).limit(limit).skip(skip)
 
-        res.json({ message: users })
+        const count = await User.count()
+
+        res.json({ message: users, totalDocuments: count })
+
         return
     } catch (err) {
         console.log(err)
@@ -61,7 +70,8 @@ const update = async (req: Request, res: Response) => {
         const user = await User.findOne({ email }, {
             password: 0,
             createdAt: 0,
-            updatedAt: 0, __v: 0
+            updatedAt: 0,
+            __v: 0
         })
 
         if (user?.rules === 'admin' || user?._id.toString() === id) {
@@ -95,7 +105,8 @@ const clear = async (req: Request, res: Response) => {
         const user = await User.findOne({ email }, {
             password: 0,
             createdAt: 0,
-            updatedAt: 0, __v: 0
+            updatedAt: 0,
+            __v: 0
         })
 
         if (user?.rules === 'admin' || user?._id.toString() === id) {
